@@ -1,41 +1,70 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
-
 export const Colors = {
+  navy: '#0D1B3E',
+  navyLight: '#132044',
+  navyMedium: '#1E3A5F',
+  navyDark: '#091530',
+  gold: '#D4AF37',
+  goldLight: '#E8CC6E',
+  goldDark: '#B8941F',
+  red: '#DC2626',
+  redLight: '#EF4444',
+  green: '#16A34A',
+  greenLight: '#22C55E',
+  white: '#FFFFFF',
+  offWhite: '#F1F5F9',
+  gray: '#94A3B8',
+  grayLight: '#CBD5E1',
+  grayDark: '#64748B',
+  orange: '#F59E0B',
+  transparent: 'transparent',
+
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    text: '#F1F5F9',
+    background: '#0D1B3E',
+    tint: '#D4AF37',
+    icon: '#94A3B8',
+    tabIconDefault: '#94A3B8',
+    tabIconSelected: '#D4AF37',
+    card: '#132044',
+    border: '#1E3A5F',
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    text: '#F1F5F9',
+    background: '#070E1F',
+    tint: '#D4AF37',
+    icon: '#94A3B8',
+    tabIconDefault: '#94A3B8',
+    tabIconSelected: '#D4AF37',
+    card: '#0D1B3E',
+    border: '#1E3A5F',
   },
 };
 
+export const Spacing = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
+  '2xl': 24,
+  '3xl': 32,
+} as const;
+
+export const Radius = {
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
+  full: 999,
+} as const;
+
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
     sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
     serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: 'ui-monospace',
   },
   default: {
@@ -51,3 +80,19 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+import { DarkTheme } from '@react-navigation/native';
+
+export const LDMLTheme = {
+  ...DarkTheme,
+  dark: true as const,
+  colors: {
+    ...DarkTheme.colors,
+    primary: Colors.gold,
+    background: Colors.navy,
+    card: Colors.navyDark,
+    text: Colors.offWhite,
+    border: Colors.navyMedium,
+    notification: Colors.red,
+  },
+};
