@@ -140,6 +140,22 @@ export default function VendreScreen() {
     const [showReceipt, setShowReceipt] = useState(false);
     const [receiptData, setReceiptData] = useState<any>(null);
 
+    const logoBase64Ref = useRef<string | null>(null);
+
+    useEffect(() => {
+        const logoUrl = ficheSettings?.['entreprise.logo'];
+        if (logoUrl && !logoBase64Ref.current) {
+            fetch(logoUrl)
+                .then(r => r.blob())
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => { logoBase64Ref.current = reader.result as string; };
+                    reader.readAsDataURL(blob);
+                })
+                .catch(() => { });
+        }
+    }, [ficheSettings?.['entreprise.logo']]);
+
     const buildReceiptHtml = async (ticket: any, settings: Record<string, string>, includeQr = false) => {
         const showLogo = settings['fiche.show_logo'] !== 'false' && settings['entreprise.logo'];
         const showEntreprise = settings['fiche.show_entreprise'] !== 'false';
@@ -148,14 +164,15 @@ export default function VendreScreen() {
         const nom = settings['entreprise.nom'] || 'LDML';
         const adresse = settings['entreprise.adresse'] || '';
         const tel = settings['entreprise.telephone'] || '';
-        const logo = settings['entreprise.logo'] || '';
+        const logo = logoBase64Ref.current || settings['entreprise.logo'] || '';
         const createdAt = ticket.createdAt ? new Date(ticket.createdAt) : new Date();
         const timeStr = createdAt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
         const dateStr = createdAt.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
 
+        const qrContent = `ldmlapp://ticket/${ticket.ref}`;
         let qrSvg = '';
         if (includeQr) {
-            try { qrSvg = await qrcode.toString(ticket.ref, { type: 'svg', width: 90, margin: 1 }); } catch { /* */ }
+            try { qrSvg = await qrcode.toString(qrContent, { type: 'svg', width: 90, margin: 1 }); } catch { /* */ }
         }
 
         const lignesHtml = (ticket.lignes || []).map((l: any) =>

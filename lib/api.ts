@@ -2,8 +2,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // const API_URL = 'http://192.168.1.66:3001/api';
-const API_URL = 'https://3a8e-2803-9810-a023-5608-296d-39af-c8d3-e9e0.ngrok-free.app/api';
-// const API_URL = 'http://10.203.178.214:3001/api';
+// const API_URL = 'https://3a8e-2803-9810-a023-5608-296d-39af-c8d3-e9e0.ngrok-free.app/api';
+const API_URL = 'https://lottomoto-backend-app-production.up.railway.app/api';
 
 const api = axios.create({
   baseURL: API_URL,
