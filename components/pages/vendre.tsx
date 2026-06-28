@@ -189,7 +189,7 @@ export default function VendreScreen() {
             *{margin:0;padding:0;box-sizing:border-box}
             body{font-family:-apple-system,sans-serif;width:58mm;margin:0 auto;padding:12px 8px;color:#1a1a1a;font-size:11px}
             .center{text-align:center}
-            .logo{width:50px;height:50px;object-fit:contain;margin:0 auto 6px}
+            .logo{width:80px;height:80px;object-fit:contain;margin:0 auto 8px}
             .name{font-size:14px;font-weight:900;margin-bottom:2px}
             .sub{font-size:9px;color:#666;margin-bottom:2px}
             .divider{border-top:1px dashed #ccc;margin:8px 0}

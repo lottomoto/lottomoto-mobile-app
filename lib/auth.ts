@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import api from './api';
+import { clearTokens, getAccessToken, getRefreshToken, setAccessToken, setRefreshToken } from './token-storage';
 
 export interface VendeurUser {
   id: string;
@@ -23,8 +24,8 @@ async function getDeviceId(): Promise<string> {
 export async function loginWithPin(username: string, pin: string): Promise<VendeurUser> {
   const deviceId = await getDeviceId();
   const { data } = await api.post('/auth/login/pin', { username, pin, deviceId });
-  await AsyncStorage.setItem('access_token', data.access_token);
-  await AsyncStorage.setItem('refresh_token', data.refresh_token);
+  await setAccessToken(data.access_token);
+  await setRefreshToken(data.refresh_token);
   await AsyncStorage.setItem('user', JSON.stringify(data.user));
   await AsyncStorage.setItem('saved_username', username);
   return data.user;
@@ -41,7 +42,7 @@ export async function getSavedUsername(): Promise<string | null> {
 }
 
 export async function getToken(): Promise<string | null> {
-  return AsyncStorage.getItem('access_token');
+  return getAccessToken();
 }
 
 export async function isAuthenticated(): Promise<boolean> {
@@ -50,8 +51,15 @@ export async function isAuthenticated(): Promise<boolean> {
 }
 
 export async function logout(): Promise<void> {
-  await AsyncStorage.removeItem('access_token');
-  await AsyncStorage.removeItem('refresh_token');
+  const refreshToken = await getRefreshToken();
+  if (refreshToken) {
+    try {
+      await api.post('/auth/logout', { refresh_token: refreshToken });
+    } catch {
+      // Local logout should still complete if the session is already invalid.
+    }
+  }
+  await clearTokens();
   await AsyncStorage.removeItem('user');
 }
 
@@ -81,6 +89,8 @@ export async function changePin(currentPin: string, newPin: string): Promise<voi
   const username = await getSavedUsername();
   if (!username) throw new Error('Pas de username sauvegardé');
 
-  await api.post('/auth/login/pin', { username, pin: currentPin });
+  const { data } = await api.post('/auth/login/pin', { username, pin: currentPin });
+  await setAccessToken(data.access_token);
+  await setRefreshToken(data.refresh_token);
   await api.patch('/vendeurs/me/pin', { pin: newPin });
 }
